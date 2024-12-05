@@ -29,3 +29,63 @@ function toggleUserMenu() {
     const userMenu = document.querySelector(".user-menu");
     userMenu.classList.toggle("open");
 }
+document.addEventListener("DOMContentLoaded", function () {
+    // Pobranie checkboxa "Zaznacz wszystkie"
+    const selectAllCheckbox = document.getElementById("selectAll");
+
+    // Pobranie wszystkich checkboxów dla wierszy tabeli
+    const rowCheckboxes = document.querySelectorAll(".rowCheckbox");
+
+    // Funkcja obsługująca zaznaczanie/odznaczanie wszystkich checkboxów
+    selectAllCheckbox.addEventListener("change", function () {
+        const isChecked = selectAllCheckbox.checked;
+        rowCheckboxes.forEach((checkbox) => {
+            checkbox.checked = isChecked;
+        });
+    });
+
+    // Funkcja do odznaczenia checkboxa "Zaznacz wszystkie", jeśli jakikolwiek checkbox zostanie odznaczony
+    rowCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+            if (!checkbox.checked) {
+                selectAllCheckbox.checked = false;
+            } else {
+                // Sprawdź, czy wszystkie są zaznaczone
+                const allChecked = Array.from(rowCheckboxes).every((cb) => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+            }
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const selectAllCheckbox = document.getElementById("selectAll");
+    const rowCheckboxes = document.querySelectorAll(".rowCheckbox");
+    const selectedCountElement = document.getElementById("selectedCount");
+
+    function updateSelectedCount() {
+        const selectedCount = Array.from(rowCheckboxes).filter((checkbox) => checkbox.checked).length;
+        selectedCountElement.textContent = [selectedCount]; // Wyświetlanie tylko liczby
+    }
+
+    selectAllCheckbox.addEventListener("change", function () {
+        const isChecked = selectAllCheckbox.checked;
+        rowCheckboxes.forEach((checkbox) => {
+            checkbox.checked = isChecked;
+        });
+        updateSelectedCount();
+    });
+
+    rowCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+            if (!checkbox.checked) {
+                selectAllCheckbox.checked = false;
+            } else {
+                const allChecked = Array.from(rowCheckboxes).every((cb) => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+            }
+            updateSelectedCount();
+        });
+    });
+
+    updateSelectedCount();
+});

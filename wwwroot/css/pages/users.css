@@ -1,2 +1,171 @@
-﻿body {
+﻿/* Główny kontener dla sekcji użytkowników */
+.users-container {
+    padding: 40px 20px;
+    margin-top: 60px;
+    margin-left: 250px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+    /* Nagłówek sekcji */
+    .users-container .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .users-container .header h1 {
+            font-size: 1.8rem;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+body.dark-mode .users-container .header h1 {
+    color: #ffffff;
+}
+
+/* Przyciski akcji */
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+    .actions .btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+/* Styl dla tabeli */
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #333; /* Domyślny kolor tekstu */
+    background-color: #ffffff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+    .table th,
+    .table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .table th {
+        background-color: #e6e6e6;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .table tbody tr {
+        color: #000000; /* Czarny tekst w light-mode */
+    }
+
+body.dark-mode .table tbody tr {
+    color: #ffffff; /* Biały tekst w dark-mode */
+}
+
+.table tbody tr:hover {
+    background-color: #f5f5f5; /* Efekt hover */
+}
+
+body.dark-mode .table tbody tr:hover {
+    background-color: #404040; /* Efekt hover w trybie dark-mode */
+}
+
+/* Styl tabeli w trybie dark-mode */
+body.dark-mode .table {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    box-shadow: none;
+}
+
+    body.dark-mode .table th {
+        background-color: #3a3a3a;
+        color: #ffffff;
+        border-color: #555;
+    }
+
+    body.dark-mode .table td {
+        border-color: #444;
+    }
+
+/* Paginacja w prawym dolnym rogu */
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+    .pagination label {
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .pagination select {
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: #ffffff;
+        color: #333;
+        border: 1px solid #ccc;
+    }
+
+body.dark-mode .pagination {
+    color: #ffffff;
+}
+
+    body.dark-mode .pagination select {
+        background-color: #1f1f1f;
+        color: #ffffff;
+        border-color: #444;
+    }
+
+/* Ogólne poprawki responsywności */
+@media (max-width: 768px) {
+    .users-container {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+}
+#selectedCount {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+body.dark-mode #selectedCount {
+    color: #ccc;
+}
+/* Kolumna checkboxa z dynamiczną szerokością */
+.table th:first-child,
+.table td:first-child {
+    width: 1%; /* Minimalna szerokość */
+    white-space: nowrap; /* Zapobieganie łamaniu tekstu */
+    text-align: center; /* Wyśrodkowanie zawartości */
 }

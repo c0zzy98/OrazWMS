@@ -11,7 +11,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Konfiguracja Identity (u¿ytkownicy, role, logowanie)
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false; // Wymaga potwierdzenia konta
+    options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireUppercase = false;
@@ -50,13 +50,17 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-// Uruchomienie aplikacji
+// Dodanie trasy do UsersController
+app.MapControllerRoute(
+    name: "users",
+    pattern: "Users/{action=Index}/{id?}",
+    defaults: new { controller = "Users" });
+
 app.Run();
 
 /// <summary>
 /// Inicjalizacja u¿ytkownika Admin oraz ról.
 /// </summary>
-/// <param name="app">Aplikacja WebApplication.</param>
 async Task InitializeAdminAsync(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
@@ -71,7 +75,6 @@ async Task InitializeAdminAsync(WebApplication app)
     }
     catch (Exception ex)
     {
-        // Logowanie b³êdów
         Console.WriteLine($"B³¹d podczas inicjalizacji bazy danych: {ex.Message}");
     }
 }
@@ -79,21 +82,17 @@ async Task InitializeAdminAsync(WebApplication app)
 /// <summary>
 /// Tworzy u¿ytkownika Admin oraz przypisuje role, jeœli nie istniej¹.
 /// </summary>
-/// <param name="userManager">Menad¿er u¿ytkowników.</param>
-/// <param name="roleManager">Menad¿er ról.</param>
 async Task InitializeAdminUserAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
 {
     const string adminEmail = "admin@example.com";
     const string adminPassword = "Admin123!";
     const string adminRole = "Admin";
 
-    // Tworzenie roli Admin, jeœli jeszcze nie istnieje
     if (!await roleManager.RoleExistsAsync(adminRole))
     {
         await roleManager.CreateAsync(new IdentityRole(adminRole));
     }
 
-    // Sprawdzenie, czy u¿ytkownik Admin ju¿ istnieje
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
     if (adminUser == null)
     {
@@ -112,7 +111,6 @@ async Task InitializeAdminUserAsync(UserManager<IdentityUser> userManager, RoleM
         }
         else
         {
-            Console.WriteLine("B³¹d podczas tworzenia u¿ytkownika Admin:");
             foreach (var error in result.Errors)
             {
                 Console.WriteLine($"- {error.Description}");
