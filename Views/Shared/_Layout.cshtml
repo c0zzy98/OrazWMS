@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OrazWMS</title>
+
+    <!-- Podstawowe style aplikacji -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/global/site.css" asp-append-version="true" />
+
+    <!-- Sekcja dla dodatkowych stylów specyficznych dla widoków -->
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <!-- Nagłówek aplikacji -->
+    <header class="navbar navbar-expand-lg navbar-light bg-light shadow">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <!-- Logo i nazwa aplikacji -->
+            <div class="d-flex align-items-center">
+                <img src="~/images/logo/logog.png" alt="Logo OrazWMS" class="logo me-2" style="height: 40px;" />
+                <span class="app-title">OrazWMS</span>
+            </div>
+
+            <!-- Menu użytkownika -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i> <span class="user-name">@User.Identity.Name</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                    <!-- Przełącznik trybu Dark Mode -->
+                    <li class="dropdown-item d-flex align-items-center">
+                        <i class="bi bi-moon me-2"></i>
+                        <span>Dark Mode</span>
+                        <div class="form-check form-switch ms-auto">
+                            <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                        </div>
+                    </li>
+                    <!-- Ustawienia -->
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="/Account/Settings">
+                            <i class="bi bi-gear me-2"></i>
+                            <span>Ustawienia</span>
+                        </a>
+                    </li>
+                    <!-- Wyloguj się -->
+                    <li>
+                        <form method="post" asp-controller="Account" asp-action="Logout" class="d-flex align-items-center m-0">
+                            <button type="submit" class="dropdown-item d-flex align-items-center">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                <span>Wyloguj się</span>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Główna zawartość aplikacji -->
+    <div class="dashboard-container d-flex">
+        <!-- Sidebar (menu boczne) -->
+        <aside class="sidebar bg-secondary text-white p-3">
+            <ul class="nav flex-column">
+                <!-- Elementy menu widoczne tylko dla zalogowanych użytkowników -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @if (User.IsInRole("Admin")) { }<!-- Elementy widoczne tylko dla administratora -->
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/Users">
+                                <i class="bi bi-people-fill"></i> Użytkownicy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/Logs">
+                                <i class="bi bi-file-earmark-text"></i> Logi
+                            </a>
+                        </li>
+                    }
+                    <!-- Magazyn -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Warehouse">
+                            <i class="bi bi-box-seam"></i> Magazyn
+                        </a>
+                    </li>
+                    <!-- Wylogowanie -->
+                    <li class="nav-item">
+                        <form method="post" asp-controller="Account" asp-action="Logout" class="m-0">
+                            <button class="nav-link btn btn-link text-white text-start" type="submit">
+                                <i class="bi bi-box-arrow-right"></i> Wyloguj się
+                            </button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </aside>
+
+        <!-- Główna treść widoku -->
+        <main class="main-content flex-grow-1 p-3">
+            @RenderBody() <!-- Renderowanie dynamicznej treści widoku -->
+        </main>
+    </div>
+
+    <!-- Ładowanie skryptów -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Sekcja dla dodatkowych skryptów specyficznych dla widoków -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,218 @@
+/* Ogólne style */
+html, body {
+    font-family: Arial, sans-serif;
+    background-color: #edf8f0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Styl dla przycisków */
+.btn-primary {
+    background-color: #2d4140;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #888a7c;
+    }
+
+    .btn-primary:focus, .btn-primary:active:focus {
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+        outline: none;
+    }
+
+/* Tryb ciemny */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+    body.dark-mode .navbar {
+        background-color: #1f1f1f;
+        color: white;
+    }
+
+    body.dark-mode .main-content {
+        background-color: #1e1e1e;
+    }
+
+    body.dark-mode .user-name {
+        color: #ffffff;
+    }
+
+/* Header */
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #668483 !important;
+    color: white !important;
+    padding: 10px 20px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: calc(100% - 250px); /* Uwzglêdnienie szerokoœci Sidebara */
+    left: 250px;
+    top: 0;
+    z-index: 1000;
+}
+
+body.dark-mode .navbar {
+    background-color: #668483; /* Odcieñ szaroœci w trybie ciemnym */
+}
+
+/* Logo i tytu³ aplikacji */
+.app-logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.app-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000; /* Czarny kolor w jasnym trybie */
+}
+
+body.dark-mode .app-title {
+    color: #ffffff; /* Bia³y kolor w trybie ciemnym */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #2d4140 !important; /* Sta³y kolor sidebaru, niezale¿nie od trybu */
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Rozci¹gniêcie na ca³¹ wysokoœæ */
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+    .sidebar .nav-link {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #d9d9d6;
+        }
+
+body.dark-mode .sidebar {
+    background-color: #2d4140 !important; /* Ponownie wymuszony kolor sidebaru */
+}
+
+/* Menu u¿ytkownika */
+.user-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: white;
+
+}
+
+.user-name {
+    color: #ffffff;
+    transition: color 0.3s ease-in-out;
+
+}
+
+body.dark-mode .user-name {
+    color: #ffffff;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    color: black;
+    list-style: none;
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    display: none;
+}
+
+    .dropdown-menu li {
+        margin-bottom: 10px;
+    }
+
+        .dropdown-menu li:last-child {
+            margin-bottom: 0;
+        }
+
+    .dropdown-menu button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: black;
+        font-size: 1rem;
+        text-align: left;
+        width: 100%;
+        transition: background-color 0.2s ease;
+    }
+
+        .dropdown-menu button:hover {
+            background-color: #ddd;
+        }
+
+    /* Styl ikon w dropdown menu */
+    .dropdown-menu .bi {
+        font-size: 1rem; /* Dopasowanie rozmiaru ikon */
+        color: #000000; /* Dopasowanie koloru ikon w trybie jasnym */
+    }
+
+body.dark-mode .dropdown-menu .bi {
+    color: #000000; /* Dopasowanie koloru ikon w trybie ciemnym */
+}
+
+/* Wyrównanie i margines ikon w dropdown */
+.dropdown-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Odstêp miêdzy ikon¹ a tekstem */
+}
+
+.user-menu.open .dropdown-menu {
+    display: block;
+}
+
+/* Responsywnoœæ */
+@media (max-width: 768px) {
+    .app-title {
+        font-size: 1.2rem;
+    }
+
+    .app-logo {
+        height: 30px;
+    }
+}

@@ -1,0 +1,48 @@
+﻿@model OrazWMS.Models.LoginViewModel
+
+@{
+    Layout = "~/Views/Shared/LoginLayout.cshtml"; // Dedykowany layout dla logowania
+}
+
+<link rel="stylesheet" href="~/css/pages/login.css" />
+
+<div class="login-container">
+    <div class="login-form">
+        <!-- Logo firmy -->
+        <img src="~/images/logo/logog.png" alt="Logo firmy" class="login-logo" />
+
+        <!-- Walidacja i wyświetlanie błędów -->
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.ErrorMessage
+            </div>
+        }
+
+        <!-- Formularz logowania -->
+        <form asp-action="Login" method="post">
+            <!-- Pole Email -->
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="Wprowadź email" autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Pole Hasło -->
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="form-label">Hasło</label>
+                <input asp-for="Password" class="form-control" placeholder="Wprowadź hasło" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <!-- Przycisk logowania -->
+            <button type="submit" class="btn btn-primary">Zaloguj się</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Obsługa walidacji za pomocą jQuery Unobtrusive -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
