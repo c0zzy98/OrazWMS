@@ -1,0 +1,51 @@
+﻿/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative; /* Ustawienie pozycji relatywnej dla układu */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #2d4140;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Wypełnij całą wysokość kontenera */
+    position: fixed; /* Pozycja fixed, aby sidebar nie nachodził na stopkę */
+    top: 0;
+    left: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+    .sidebar .nav-link {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #888a7c;
+        }
+
+/* Main Content */
+.main-content {
+    margin-left: 250px; /* Zarezerwuj miejsce na sidebar */
+    padding: 20px;
+    background-color: #edf8f0;
+    flex: 1;
+    min-height: calc(100vh - 60px); /* Odejmij wysokość stopki, aby uniknąć nakładania */
+    overflow-y: auto;
+}

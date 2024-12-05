@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>aspnet-OrazWMS-72eb2408-db6c-4c8d-88d9-75f3011a16c8</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- ASP.NET Core Identity for Entity Framework -->
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
+
+		<!-- Core Entity Framework Libraries -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" PrivateAssets="all" />
+
+		<!-- PostgreSQL Support -->
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+	</ItemGroup>
+
+</Project>

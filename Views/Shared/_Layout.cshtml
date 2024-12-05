@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OrazWMS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/global/site.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false) <!-- Renderowanie sekcji Styles -->
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="nav flex-column">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Users">
+                                <i class="bi bi-people-fill"></i> Użytkownicy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Logs">
+                                <i class="bi bi-file-earmark-text"></i> Logi
+                            </a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Warehouse">
+                            <i class="bi bi-box-seam"></i> Magazyn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" asp-controller="Account" asp-action="Logout" class="m-0">
+                            <button class="nav-link btn btn-link text-start" type="submit">
+                                <i class="bi bi-box-arrow-right"></i> Wyloguj się
+                            </button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer text-center text-muted">
+        <div class="container">
+            &copy; 2024 - OrazWMS
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
