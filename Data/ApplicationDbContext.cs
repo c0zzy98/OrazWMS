@@ -1,50 +1,61 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using OrazWMS.Models;
 
 namespace OrazWMS.Data
 {
-    // Klasa ApplicationDbContext dziedziczy po IdentityDbContext
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<OrazWMS.Models.ApplicationUser> // Poprawne dziedziczenie
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        // DbSet dla ActivityLog
-        public DbSet<ActivityLog> ActivityLogs { get; set; } = null!; // Zainicjalizowane
+        public DbSet<ActivityLog> ActivityLogs { get; set; } = null!; // Logi aktywności
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Wywołanie podstawowej konfiguracji dla Identity
             base.OnModelCreating(modelBuilder);
 
-            // Konfiguracja tabeli ActivityLog
+            // Konfiguracja ApplicationUser
+            modelBuilder.Entity<OrazWMS.Models.ApplicationUser>()
+                .Property(u => u.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Domyślna wartość daty utworzenia
+
+            // Konfiguracja ActivityLog
             modelBuilder.Entity<ActivityLog>(entity =>
             {
-                entity.HasKey(a => a.Id); // Klucz główny
+                entity.HasKey(a => a.Id);
+
                 entity.Property(a => a.Action)
                       .IsRequired()
-                      .HasMaxLength(255); // Wymagana właściwość z ograniczeniem długości
+                      .HasMaxLength(255);
+
                 entity.Property(a => a.Timestamp)
-                      .HasDefaultValueSql("CURRENT_TIMESTAMP") // Domyślna wartość w PostgreSQL
+                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
                       .IsRequired();
+
                 entity.HasOne(a => a.User)
-                      .WithMany() // Brak nawigacji w drugą stronę
+                      .WithMany()
                       .HasForeignKey(a => a.UserId)
-                      .OnDelete(DeleteBehavior.Cascade); // Usunięcie logu, gdy użytkownik zostanie usunięty
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired();
             });
         }
     }
 
-    // Klasa ActivityLog dla logów aktywności
+    public class ApplicationUser : IdentityUser
+    {
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Data utworzenia konta
+    }
+
     public class ActivityLog
     {
-        public int Id { get; set; } // Klucz główny
-        public string Action { get; set; } = string.Empty; // Wymagana właściwość z wartością domyślną
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow; // Domyślny czas
-        public string UserId { get; set; } = string.Empty; // Klucz obcy do IdentityUser
-        public IdentityUser User { get; set; } = null!; // Nawigacja do użytkownika
+        public int Id { get; set; }
+        public string Action { get; set; } = string.Empty;
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public string UserId { get; set; } = string.Empty;
+        public OrazWMS.Models.ApplicationUser User { get; set; } = null!;
     }
 }

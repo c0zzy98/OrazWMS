@@ -58,34 +58,38 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("Skrypt załadowany!");
+
     const selectAllCheckbox = document.getElementById("selectAll");
-    const rowCheckboxes = document.querySelectorAll(".rowCheckbox");
+    const rowCheckboxes = document.querySelectorAll(".selectRow");
     const selectedCountElement = document.getElementById("selectedCount");
 
+    if (!selectAllCheckbox || !selectedCountElement) {
+        console.error("Nie znaleziono elementów selectAllCheckbox lub selectedCountElement!");
+        return;
+    }
+
     function updateSelectedCount() {
-        const selectedCount = Array.from(rowCheckboxes).filter((checkbox) => checkbox.checked).length;
-        selectedCountElement.textContent = [selectedCount]; // Wyświetlanie tylko liczby
+        const selectedCount = document.querySelectorAll(".selectRow:checked").length;
+        selectedCountElement.textContent = `[${selectedCount}]`;
+        console.log(`Zaznaczonych: ${selectedCount}`);
     }
 
     selectAllCheckbox.addEventListener("change", function () {
         const isChecked = selectAllCheckbox.checked;
-        rowCheckboxes.forEach((checkbox) => {
+        document.querySelectorAll(".selectRow").forEach((checkbox) => {
             checkbox.checked = isChecked;
         });
         updateSelectedCount();
     });
 
-    rowCheckboxes.forEach((checkbox) => {
+    document.querySelectorAll(".selectRow").forEach((checkbox) => {
         checkbox.addEventListener("change", function () {
-            if (!checkbox.checked) {
-                selectAllCheckbox.checked = false;
-            } else {
-                const allChecked = Array.from(rowCheckboxes).every((cb) => cb.checked);
-                selectAllCheckbox.checked = allChecked;
-            }
+            const allChecked = document.querySelectorAll(".selectRow").length === document.querySelectorAll(".selectRow:checked").length;
+            selectAllCheckbox.checked = allChecked;
             updateSelectedCount();
         });
     });
 
-    updateSelectedCount();
+    updateSelectedCount(); // Inicjalizacja
 });

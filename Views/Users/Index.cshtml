@@ -5,6 +5,8 @@
 }
 
 <link rel="stylesheet" href="~/css/pages/users.css" />
+<script src="~/js/site.js"></script>
+
 
 <div class="users-container">
     <div class="header">
@@ -30,22 +32,31 @@
                         <input type="checkbox" id="selectAll" />
                         <span id="selectedCount" class="ms-2">[0]</span>
                     </th> <!-- Checkbox dla wszystkich -->
-                    <th>#</th>
-                    <th>Email</th>
+                    <th>LP</th>
+                    <th>Nazwa użytkownika</th>
+                    <th>Email/Login</th>
+                    <th>Telefon</th>
                     <th>Rola</th>
                     <th>Data utworzenia</th>
                 </tr>
             </thead>
             <tbody>
+                @{
+                    int rowNumber = 1;
+                } <!-- Licznik numeracji wierszy -->
                 @foreach (var user in Model)
                 {
                     <tr>
-                        <td><input type="checkbox" class="rowCheckbox" /></td> <!-- Checkbox dla wiersza -->
-                        <td>@user.Id</td>
+                        <td><input type="checkbox" class="selectRow" data-id="@user.Id" /></td>
+                        <td>@rowNumber</td> <!-- Numeracja wierszy -->
+                        <td>@user.Name</td>
                         <td>@user.Email</td>
+                        <td>@user.Phone</td>
                         <td>@user.Role</td>
-                        <td>@user.CreatedAt.ToShortDateString()</td>
+                        <td>@user.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
                     </tr>
+                    rowNumber++;
+                    <!-- Zwiększamy licznik -->
                 }
             </tbody>
         </table>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OrazWMS.Data;
+using OrazWMS.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Konfiguracja Identity (u¿ytkownicy, role, logowanie)
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+// Konfiguracja Identity (U¯YJ ApplicationUser zamiast IdentityUser!)
+builder.Services.AddIdentity<OrazWMS.Models.ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
@@ -68,7 +69,7 @@ async Task InitializeAdminAsync(WebApplication app)
 
     try
     {
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = services.GetRequiredService<UserManager<OrazWMS.Models.ApplicationUser>>(); // POPRAWKA: U¿yj ApplicationUser
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
         await InitializeAdminUserAsync(userManager, roleManager);
@@ -82,7 +83,7 @@ async Task InitializeAdminAsync(WebApplication app)
 /// <summary>
 /// Tworzy u¿ytkownika Admin oraz przypisuje role, jeœli nie istniej¹.
 /// </summary>
-async Task InitializeAdminUserAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+async Task InitializeAdminUserAsync(UserManager<OrazWMS.Models.ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 {
     const string adminEmail = "admin@example.com";
     const string adminPassword = "Admin123!";
@@ -96,7 +97,7 @@ async Task InitializeAdminUserAsync(UserManager<IdentityUser> userManager, RoleM
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
     if (adminUser == null)
     {
-        adminUser = new IdentityUser
+        adminUser = new OrazWMS.Models.ApplicationUser // POPRAWKA: U¿yj ApplicationUser zamiast IdentityUser
         {
             UserName = adminEmail,
             Email = adminEmail,

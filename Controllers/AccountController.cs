@@ -8,10 +8,10 @@ namespace OrazWMS.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<OrazWMS.Models.ApplicationUser> _signInManager;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(SignInManager<IdentityUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(SignInManager<OrazWMS.Models.ApplicationUser> signInManager, ILogger<AccountController> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
