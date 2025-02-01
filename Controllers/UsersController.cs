@@ -67,6 +67,7 @@ namespace OrazWMS.Controllers
 
                     return Json(new { success = true });
                 }
+
             }
 
             return Json(new { success = false, message = "Nie udało się dodać użytkownika." });
