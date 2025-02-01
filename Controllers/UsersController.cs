@@ -27,7 +27,8 @@ namespace OrazWMS.Controllers
             var users = await _context.Users
                 .Select(u => new UserViewModel
                 {
-                    Name = u.UserName,
+                    Id = u.Id,
+                    UserName = u.UserName,
                     Email = u.Email,
                     Phone = u.PhoneNumber ?? "Brak",
                     Role = _context.UserRoles
@@ -108,5 +109,26 @@ namespace OrazWMS.Controllers
                 return Json(new { success = false, message = $"Wystąpił błąd: {ex.Message}" });
             }
         }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();  // 🔥 TO JEST TWÓJ BŁĄD 404!
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { success = false, message = "Nie udało się usunąć użytkownika." });
+            }
+
+            return Ok(new { success = true });
+        }
+
+
+
+
     }
 }

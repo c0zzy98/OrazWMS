@@ -144,7 +144,7 @@ document.getElementById("password").addEventListener("input", function () {
 
     errorsList.style.display = isValid ? "none" : "block";
 });
-
+//dodawanie użytkownika 
 document.addEventListener("DOMContentLoaded", function () {
     const addUserForm = document.getElementById("addUserForm");
 
@@ -182,3 +182,138 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Błąd:", error));
     });
 });
+//usuwanie użytkownika
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".selectRow");
+    const deleteUserBtn = document.getElementById("deleteUserBtn");
+    let selectedUser = null;
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            const checkedUsers = Array.from(checkboxes).filter(c => c.checked);
+            deleteUserBtn.disabled = checkedUsers.length === 0;
+        });
+    });
+
+    deleteUserBtn.addEventListener("click", function () {
+        const checkedUsers = Array.from(checkboxes).filter(c => c.checked);
+
+        if (checkedUsers.length === 1) {
+            selectedUser = checkedUsers[0];
+
+            const username = selectedUser.dataset.username;
+            const userId = selectedUser.dataset.userid; // Pobieramy poprawnie ID użytkownika
+
+            if (!userId || userId.trim() === "") {
+                alert("Błąd: ID użytkownika nie zostało poprawnie pobrane.");
+                return;
+            }
+
+            document.getElementById("deleteUserName").innerText = username;
+            document.getElementById("deleteUserId").value = userId;
+
+            var myModal = new bootstrap.Modal(document.getElementById("deleteUserModal"));
+            myModal.show();
+        } else {
+            alert("Wybierz dokładnie jednego użytkownika do usunięcia.");
+        }
+    });
+
+    document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+        const userId = document.getElementById("deleteUserId").value;
+
+        if (!userId || userId.trim() === "") {
+            alert("Błąd: brak ID użytkownika.");
+            return;
+        }
+
+        fetch(`/Users/DeleteUser/${userId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Użytkownik usunięty!");
+                    location.reload(); // Odświeżenie tabeli
+                } else {
+                    alert("Błąd: " + data.message);
+                }
+            })
+            .catch(error => console.error("Błąd:", error));
+
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("📌 Skrypt usuwania użytkownika załadowany!");
+
+    const checkboxes = document.querySelectorAll(".selectRow");
+    const deleteUserBtn = document.getElementById("deleteUserBtn");
+    let selectedUser = null;
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            const checkedUsers = Array.from(checkboxes).filter(c => c.checked);
+            deleteUserBtn.disabled = checkedUsers.length === 0;
+        });
+    });
+
+    deleteUserBtn.addEventListener("click", function () {
+        const checkedUser = document.querySelector(".selectRow:checked"); // 🔥 Poprawione pobieranie checkboxa
+
+        console.log("📌 Sprawdzenie zaznaczonego użytkownika:", checkedUser);
+        if (!checkedUser) {
+            alert("❌ Nie zaznaczono użytkownika do usunięcia.");
+            return;
+        }
+
+        const userId = checkedUser.getAttribute("data-userid");
+        const username = checkedUser.getAttribute("data-username");
+
+        console.log("📌 Pobierane ID użytkownika:", userId);
+        console.log("📌 Pobierana nazwa użytkownika:", username);
+
+        if (!userId || userId.trim() === "") {
+            console.error("❌ Błąd: ID użytkownika nie zostało poprawnie pobrane.");
+            return;
+        }
+
+        document.getElementById("deleteUserName").innerText = username;
+        document.getElementById("deleteUserId").value = userId;
+
+        var myModal = new bootstrap.Modal(document.getElementById("deleteUserModal"));
+        myModal.show();
+    });
+
+    document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+        const userId = document.getElementById("deleteUserId").value;
+
+        console.log("📌 Wysyłanie ID użytkownika do API:", userId);
+
+        if (!userId || userId.trim() === "") {
+            alert("❌ Błąd: brak ID użytkownika.");
+            return;
+        }
+
+        fetch(`/Users/DeleteUser/${encodeURIComponent(userId)}`, { 
+            method: "DELETE"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("📌 Odpowiedź serwera:", data);
+
+            if (data.success) {
+                alert("✅ Użytkownik został usunięty.");
+                var modal = bootstrap.Modal.getInstance(document.getElementById("deleteUserModal"));
+                modal.hide();
+                setTimeout(() => { location.reload(); }, 500);
+            } else {
+                alert("❌ Błąd: " + data.message);
+            }
+        })
+        .catch(error => console.error("❌ Błąd w fetch:", error));
+    });
+});
+
+
+

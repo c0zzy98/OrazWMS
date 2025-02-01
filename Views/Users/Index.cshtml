@@ -23,6 +23,27 @@
             </button>
         </div>
     </div>
+
+    <!-- Modal potwierdzenia usunięcia -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteUserModalLabel">Potwierdzenie usunięcia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteUserMessage">Czy na pewno chcesz usunąć użytkownika <strong id="deleteUserName"></strong>?</p>
+                    <input type="hidden" id="deleteUserId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Tak, usuń</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal do dodawania użytkownika -->
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -98,9 +119,13 @@
                 @foreach (var user in Model)
                 {
                     <tr>
-                        <td><input type="checkbox" class="selectRow" data-id="@user.Id" /></td>
+                        <td><input type="checkbox" class="selectRow"
+								   data-userid="@user.Id"
+                                    data-username="@user.UserName" 
+                                 /></td>
+
                         <td>@rowNumber</td> <!-- Numeracja wierszy -->
-                        <td>@user.Name</td>
+                        <td>@user.UserName</td>
                         <td>@user.Email</td>
                         <td>@user.Phone</td>
                         <td>@user.Role</td>

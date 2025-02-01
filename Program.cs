@@ -56,7 +56,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapControllers();
 // Mapowanie tras
 app.MapControllerRoute(
     name: "default",
