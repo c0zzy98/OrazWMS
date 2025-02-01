@@ -93,3 +93,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateSelectedCount(); // Inicjalizacja
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const addUserForm = document.getElementById("addUserForm");
+
+    addUserForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const phone = document.getElementById("phone").value;
+        const role = document.getElementById("role").value;
+
+        fetch("/Users/AddUser", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ Email: email, Password: password, PhoneNumber: phone, Role: role })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Użytkownik dodany!");
+                    location.reload(); // Odświeżenie listy użytkowników
+                } else {
+                    alert("Błąd: " + data.message);
+                }
+            })
+            .catch(error => console.error("Błąd:", error));
+    });
+});

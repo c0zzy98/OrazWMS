@@ -12,8 +12,8 @@
     <div class="header">
         <h1>Lista użytkowników</h1>
         <div class="actions">
-            <button class="btn btn-primary" id="addUserBtn">
-                <i class="bi bi-plus-circle"></i> Dodaj użytkownika
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                Dodaj użytkownika
             </button>
             <button class="btn btn-secondary" id="editUserBtn" disabled>
                 <i class="bi bi-pencil-square"></i> Edytuj
@@ -21,6 +21,47 @@
             <button class="btn btn-danger" id="deleteUserBtn" disabled>
                 <i class="bi bi-trash"></i> Usuń
             </button>
+        </div>
+    </div>
+    <!-- Modal do dodawania użytkownika -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Dodaj użytkownika</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nazwa użytkownika</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email użytkownika</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Hasło</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Numer telefonu</label>
+                            <input type="tel" class="form-control" id="phone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Rola</label>
+                            <select class="form-select" id="role">
+                                @foreach (var role in ViewBag.Roles)
+                                {
+                                    <option value="@role.Name">@role.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Dodaj</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

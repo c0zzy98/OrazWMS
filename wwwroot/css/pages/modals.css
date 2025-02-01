@@ -1,0 +1,26 @@
+﻿/* Stylowanie nagłówka modala */
+#addUserModal .modal-header {
+    background-color: #2C3941;
+    color: white;
+    border-bottom: 2px solid #6F7569;
+}
+
+/* Stylowanie przycisku zamknięcia */
+#addUserModal .btn-close {
+    filter: invert(1); /* Zmienia kolor na biały */
+}
+
+/* Stylowanie treści modala */
+#addUserModal .modal-body {
+    background-color: #f8f9fa;
+}
+
+/* Stylowanie przycisku dodawania */
+#addUserModal button[type="submit"] {
+    background-color: #485E60;
+    border: none;
+}
+
+    #addUserModal button[type="submit"]:hover {
+        background-color: #6F7569;
+    }

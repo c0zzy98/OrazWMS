@@ -1,29 +1,27 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using OrazWMS.Models;
+using OrazWMS.Models; // ✅ IMPORT MODELI (w tym ActivityLog)
 
 namespace OrazWMS.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<OrazWMS.Models.ApplicationUser> // Poprawne dziedziczenie
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<ActivityLog> ActivityLogs { get; set; } = null!; // Logi aktywności
+        public DbSet<ActivityLog> ActivityLogs { get; set; } = null!; // ✅ TERAZ DZIAŁA
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Konfiguracja ApplicationUser
-            modelBuilder.Entity<OrazWMS.Models.ApplicationUser>()
+            modelBuilder.Entity<ApplicationUser>()
                 .Property(u => u.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Domyślna wartość daty utworzenia
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            // Konfiguracja ActivityLog
             modelBuilder.Entity<ActivityLog>(entity =>
             {
                 entity.HasKey(a => a.Id);
@@ -43,19 +41,5 @@ namespace OrazWMS.Data
                       .IsRequired();
             });
         }
-    }
-
-    public class ApplicationUser : IdentityUser
-    {
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Data utworzenia konta
-    }
-
-    public class ActivityLog
-    {
-        public int Id { get; set; }
-        public string Action { get; set; } = string.Empty;
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public string UserId { get; set; } = string.Empty;
-        public OrazWMS.Models.ApplicationUser User { get; set; } = null!;
     }
 }

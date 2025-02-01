@@ -5,38 +5,35 @@ using OrazWMS.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Konfiguracja bazy danych
+//Konfiguracja bazy danych
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Konfiguracja Identity (U¯YJ ApplicationUser zamiast IdentityUser!)
-builder.Services.AddIdentity<OrazWMS.Models.ApplicationUser, IdentityRole>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = false;
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireUppercase = false;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+//POPRAWIONA REJESTRACJA IDENTITY (zamiast IdentityUser -> ApplicationUser)
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
-// Konfiguracja kontrolerów i widoków
+//DODANIE OBS£UGI UserManager I RoleManager DO DI
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
+builder.Services.AddScoped<RoleManager<IdentityRole>>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// ?? Inicjalizacja ról i u¿ytkownika Admin
+//Inicjalizacja ról i u¿ytkownika Admin
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<OrazWMS.Models.ApplicationUser>>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-    await EnsureRolesAsync(roleManager); // ?? Teraz role bêd¹ inicjalizowane zawsze
+    await EnsureRolesAsync(roleManager);
     await InitializeAdminAsync(userManager, roleManager);
 }
 
-// Konfiguracja œrodowisk
+//Konfiguracja œrodowiska
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -47,19 +44,18 @@ else
     app.UseHsts();
 }
 
-// Middleware
+//Middleware
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthentication(); // Obs³uga logowania u¿ytkownika
-app.UseAuthorization();  // Obs³uga autoryzacji ról
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Mapowanie tras
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-// Dodanie trasy do UsersController
 app.MapControllerRoute(
     name: "users",
     pattern: "Users/{action=Index}/{id?}",
@@ -80,7 +76,7 @@ async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager)
         if (!roleExists)
         {
             await roleManager.CreateAsync(new IdentityRole(roleName));
-            Console.WriteLine($" Rola {roleName} zosta³a dodana do bazy.");
+            Console.WriteLine($"Rola {roleName} zosta³a dodana do bazy.");
         }
     }
 }
@@ -88,7 +84,7 @@ async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager)
 /// <summary>
 /// Inicjalizuje u¿ytkownika Admin, jeœli nie istnieje.
 /// </summary>
-async Task InitializeAdminAsync(UserManager<OrazWMS.Models.ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+async Task InitializeAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 {
     const string adminEmail = "admin@example.com";
     const string adminPassword = "Admin123!";
@@ -97,7 +93,7 @@ async Task InitializeAdminAsync(UserManager<OrazWMS.Models.ApplicationUser> user
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
     if (adminUser == null)
     {
-        adminUser = new OrazWMS.Models.ApplicationUser
+        adminUser = new ApplicationUser
         {
             UserName = adminEmail,
             Email = adminEmail,
@@ -108,18 +104,18 @@ async Task InitializeAdminAsync(UserManager<OrazWMS.Models.ApplicationUser> user
         if (result.Succeeded)
         {
             await userManager.AddToRoleAsync(adminUser, adminRole);
-            Console.WriteLine(" U¿ytkownik Admin zosta³ pomyœlnie utworzony.");
+            Console.WriteLine("U¿ytkownik Admin zosta³ pomyœlnie utworzony.");
         }
         else
         {
             foreach (var error in result.Errors)
             {
-                Console.WriteLine($" {error.Description}");
+                Console.WriteLine($"{error.Description}");
             }
         }
     }
     else
     {
-        Console.WriteLine(" U¿ytkownik Admin ju¿ istnieje.");
+        Console.WriteLine("U¿ytkownik Admin ju¿ istnieje.");
     }
 }
