@@ -1,19 +1,22 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OrazWMS.Models; // ViewModel dla logowania
+using OrazWMS.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace OrazWMS.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<OrazWMS.Models.ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(SignInManager<OrazWMS.Models.ApplicationUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<AccountController> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -33,7 +36,17 @@ namespace OrazWMS.Controllers
                 return View(model);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            // Znalezienie użytkownika po Emailu
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                _logger.LogWarning("Nie znaleziono użytkownika z emailem: {Email}.", model.Email);
+                ModelState.AddModelError(string.Empty, "Nieprawidłowy email lub hasło.");
+                return View(model);
+            }
+
+            // Próba logowania po UserName
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, false, false);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User {Email} logged in successfully.", model.Email);

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+Ôªøusing Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OrazWMS.Data;
 using OrazWMS.Models;
@@ -12,23 +12,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //POPRAWIONA REJESTRACJA IDENTITY (zamiast IdentityUser -> ApplicationUser)
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;    // Musi zawieraÊ cyfrÍ
-    options.Password.RequiredLength = 8;     // Minimalna d≥ugoúÊ 8 znakÛw
-    options.Password.RequireUppercase = true; // Musi zawieraÊ wielkπ literÍ
-    options.Password.RequireLowercase = true; // Musi zawieraÊ ma≥π literÍ
-    options.Password.RequireNonAlphanumeric = true; // Musi zawieraÊ znak specjalny
+    options.Password.RequireDigit = true;    // Musi zawieraƒá cyfrƒô
+    options.Password.RequiredLength = 8;     // Minimalna d≈Çugo≈õƒá 8 znak√≥w
+    options.Password.RequireUppercase = true; // Musi zawieraƒá wielkƒÖ literƒô
+    options.Password.RequireLowercase = true; // Musi zawieraƒá ma≈ÇƒÖ literƒô
+    options.Password.RequireNonAlphanumeric = true; // Musi zawieraƒá znak specjalny
 }).AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-//DODANIE OBS£UGI UserManager I RoleManager DO DI
+//DODANIE OBS≈ÅUGI UserManager I RoleManager DO DI
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddScoped<RoleManager<IdentityRole>>();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = false; // üî• Pozwala na logowanie bez potwierdzonego e-maila
+});
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-//Inicjalizacja rÛl i uøytkownika Admin
+//Inicjalizacja r√≥l i u≈ºytkownika Admin
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -39,7 +43,7 @@ using (var scope = app.Services.CreateScope())
     await InitializeAdminAsync(userManager, roleManager);
 }
 
-//Konfiguracja úrodowiska
+//Konfiguracja ≈õrodowiska
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -82,13 +86,13 @@ async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager)
         if (!roleExists)
         {
             await roleManager.CreateAsync(new IdentityRole(roleName));
-            Console.WriteLine($"Rola {roleName} zosta≥a dodana do bazy.");
+            Console.WriteLine($"Rola {roleName} zosta≈Ça dodana do bazy.");
         }
     }
 }
 
 /// <summary>
-/// Inicjalizuje uøytkownika Admin, jeúli nie istnieje.
+/// Inicjalizuje u≈ºytkownika Admin, je≈õli nie istnieje.
 /// </summary>
 async Task InitializeAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 {
@@ -110,7 +114,7 @@ async Task InitializeAdminAsync(UserManager<ApplicationUser> userManager, RoleMa
         if (result.Succeeded)
         {
             await userManager.AddToRoleAsync(adminUser, adminRole);
-            Console.WriteLine("Uøytkownik Admin zosta≥ pomyúlnie utworzony.");
+            Console.WriteLine("U≈ºytkownik Admin zosta≈Ç pomy≈õlnie utworzony.");
         }
         else
         {
@@ -122,6 +126,6 @@ async Task InitializeAdminAsync(UserManager<ApplicationUser> userManager, RoleMa
     }
     else
     {
-        Console.WriteLine("Uøytkownik Admin juø istnieje.");
+        Console.WriteLine("U≈ºytkownik Admin ju≈º istnieje.");
     }
 }
