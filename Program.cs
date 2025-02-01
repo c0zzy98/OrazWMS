@@ -10,8 +10,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //POPRAWIONA REJESTRACJA IDENTITY (zamiast IdentityUser -> ApplicationUser)
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;    // Musi zawieraæ cyfrê
+    options.Password.RequiredLength = 8;     // Minimalna d³ugoœæ 8 znaków
+    options.Password.RequireUppercase = true; // Musi zawieraæ wielk¹ literê
+    options.Password.RequireLowercase = true; // Musi zawieraæ ma³¹ literê
+    options.Password.RequireNonAlphanumeric = true; // Musi zawieraæ znak specjalny
+}).AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
 //DODANIE OBS£UGI UserManager I RoleManager DO DI

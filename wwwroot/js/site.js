@@ -93,6 +93,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateSelectedCount(); // Inicjalizacja
 });
+document.getElementById("username").addEventListener("input", function (e) {
+    this.value = this.value.replace(/[^a-zA-Z0-9-_]/g, '');
+});
+document.getElementById("password").addEventListener("input", function () {
+    const password = this.value;
+    const errorsList = document.getElementById("passwordErrors");
+    const lengthError = document.getElementById("lengthError");
+    const uppercaseError = document.getElementById("uppercaseError");
+    const lowercaseError = document.getElementById("lowercaseError");
+    const digitError = document.getElementById("digitError");
+    const specialCharError = document.getElementById("specialCharError");
+
+    let isValid = true;
+
+    if (password.length >= 8) {
+        lengthError.style.color = "green";
+    } else {
+        lengthError.style.color = "red";
+        isValid = false;
+    }
+
+    if (/[A-Z]/.test(password)) {
+        uppercaseError.style.color = "green";
+    } else {
+        uppercaseError.style.color = "red";
+        isValid = false;
+    }
+
+    if (/[a-z]/.test(password)) {
+        lowercaseError.style.color = "green";
+    } else {
+        lowercaseError.style.color = "red";
+        isValid = false;
+    }
+
+    if (/\d/.test(password)) {
+        digitError.style.color = "green";
+    } else {
+        digitError.style.color = "red";
+        isValid = false;
+    }
+
+    if (/[^a-zA-Z0-9]/.test(password)) {
+        specialCharError.style.color = "green";
+    } else {
+        specialCharError.style.color = "red";
+        isValid = false;
+    }
+
+    errorsList.style.display = isValid ? "none" : "block";
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const addUserForm = document.getElementById("addUserForm");
 
@@ -110,7 +162,13 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ Email: email, Password: password, PhoneNumber: phone, Role: role })
+            body: JSON.stringify({
+                UserName: username, // ✅ Teraz `UserName` jest wysyłane do backendu
+                Email: email,
+                Password: password,
+                PhoneNumber: phone,
+                Role: role
+            })
         })
             .then(response => response.json())
             .then(data => {

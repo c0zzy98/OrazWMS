@@ -48,29 +48,65 @@ namespace OrazWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser([FromBody] UserCreateViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = new ApplicationUser // Poprawione użycie ApplicationUser
+                return Json(new { success = false, message = "Nieprawidłowe dane wejściowe." });
+            }
+
+            try
+            {
+                // **SPRAWDZENIE, CZY EMAIL LUB USERNAME JUŻ ISTNIEJE**
+                var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email);
+                var existingUserByUsername = await _userManager.FindByNameAsync(model.UserName);
+
+                if (existingUserByEmail != null)
                 {
-                    UserName = model.Email,
+                    return Json(new { success = false, message = "Użytkownik z tym adresem email już istnieje." });
+                }
+
+                if (existingUserByUsername != null)
+                {
+                    return Json(new { success = false, message = "Nazwa użytkownika jest już zajęta." });
+                }
+
+                // **TWORZENIE NOWEGO UŻYTKOWNIKA**
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (!result.Succeeded)
                 {
-                    if (!string.IsNullOrEmpty(model.Role) && await _roleManager.RoleExistsAsync(model.Role))
-                    {
-                        await _userManager.AddToRoleAsync(user, model.Role);
-                    }
-
-                    return Json(new { success = true });
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+                    return Json(new { success = false, message = "Błąd tworzenia użytkownika", errors });
                 }
 
-            }
+                // **SPRAWDZENIE I PRZYPISANIE ROLI**
+                if (!string.IsNullOrEmpty(model.Role))
+                {
+                    var roleExists = await _roleManager.RoleExistsAsync(model.Role);
+                    if (!roleExists)
+                    {
+                        return Json(new { success = false, message = $"Rola '{model.Role}' nie istnieje." });
+                    }
 
-            return Json(new { success = false, message = "Nie udało się dodać użytkownika." });
+                    var roleResult = await _userManager.AddToRoleAsync(user, model.Role);
+                    if (!roleResult.Succeeded)
+                    {
+                        var roleErrors = roleResult.Errors.Select(e => e.Description).ToList();
+                        return Json(new { success = false, message = "Błąd przypisywania roli", errors = roleErrors });
+                    }
+                }
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Wystąpił błąd: {ex.Message}" });
+            }
         }
     }
 }

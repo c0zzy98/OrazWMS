@@ -35,7 +35,7 @@
                     <form id="addUserForm">
                         <div class="mb-3">
                             <label for="username" class="form-label">Nazwa użytkownika</label>
-                            <input type="text" class="form-control" id="username" required>
+                            <input type="text" class="form-control" id="username" pattern="[a-zA-Z0-9-_]+" required>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email użytkownika</label>
@@ -44,6 +44,16 @@
                         <div class="mb-3">
                             <label for="password" class="form-label">Hasło</label>
                             <input type="password" class="form-control" id="password" required>
+                            <small id="passwordHelp" class="form-text text-muted">
+                                - Min. 8 znaków, 1 duża litera, 1 mała litera, 1 cyfra, 1 znak specjalny.
+                                </small>
+                            <ul id="passwordErrors" class="text-danger" style="display: none;">
+                                <li id="lengthError"> Min. 8 znaków</li>
+                                <li id="uppercaseError"> Min. 1 duża litera</li>
+                                <li id="lowercaseError"> Min. 1 mała litera</li>
+                                <li id="digitError"> Min. 1 cyfra</li>
+                                <li id="specialCharError"> Min. 1 znak specjalny</li>
+                            </ul>
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Numer telefonu</label>
