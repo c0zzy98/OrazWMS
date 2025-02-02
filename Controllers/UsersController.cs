@@ -112,23 +112,55 @@ namespace OrazWMS.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound();  // 🔥 TO JEST TWÓJ BŁĄD 404!
-            }
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest(new { success = false, message = "Nieprawidłowy identyfikator użytkownika." });
+                }
 
-            var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound(new { success = false, message = "Użytkownik nie istnieje." });
+                }
+
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser == null)
+                {
+                    return Unauthorized(new { success = false, message = "Brak uprawnień do wykonania tej operacji." });
+                }
+
+                bool isTargetAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+                bool isCurrentAdmin = await _userManager.IsInRoleAsync(currentUser, "Admin");
+
+                if (!isCurrentAdmin && isTargetAdmin)
+                {
+                    return StatusCode(403, new { success = false, message = "Nie masz uprawnień do usunięcia administratora." });
+                }
+
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Nie udało się usunąć użytkownika.",
+                        errors = result.Errors.Select(e => e.Description)
+                    });
+                }
+
+                return Ok(new { success = true, message = "Użytkownik został pomyślnie usunięty." });
+            }
+            catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = "Nie udało się usunąć użytkownika." });
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Wystąpił nieoczekiwany błąd podczas usuwania użytkownika.",
+                    error = ex.Message
+                });
             }
-
-            return Ok(new { success = true });
         }
-
-
-
-
     }
 }
