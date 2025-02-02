@@ -11,16 +11,21 @@
 <div class="users-container">
     <div class="header">
         <h1>Lista użytkowników</h1>
-        <div class="actions">
+            <div class="actions">
+
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
                 Dodaj użytkownika
             </button>
+
             <button class="btn btn-secondary" id="editUserBtn" disabled>
                 <i class="bi bi-pencil-square"></i> Edytuj
             </button>
+            <input type="hidden" id="selectedUserId">
+
             <button class="btn btn-danger" id="deleteUserBtn" disabled>
                 <i class="bi bi-trash"></i> Usuń
             </button>
+
         </div>
     </div>
 
@@ -96,6 +101,56 @@
         </div>
     </div>
 
+    <!-- Modal edycji użytkownika -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Edytuj użytkownika</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+
+                        <div class="mb-3">
+                            <label for="editUserName" class="form-label">Nazwa użytkownika</label>
+                            <input type="text" class="form-control" id="editUserName" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editEmail" class="form-label">Adres e-mail</label>
+                            <input type="email" class="form-control" id="editEmail">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editPhoneNumber" class="form-label">Numer telefonu</label>
+                            <input type="text" class="form-control" id="editPhoneNumber">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editPassword" class="form-label">Nowe hasło</label>
+                            <input type="password" class="form-control" id="editPassword">
+                            <small id="editPasswordHelp" class="form-text text-muted">
+                                - Min. 8 znaków, 1 duża litera, 1 mała litera, 1 cyfra, 1 znak specjalny.
+                            </small>
+                            <ul id="editPasswordErrors" class="text-danger" style="display: none;">
+                                <li id="editLengthError"> Min. 8 znaków</li>
+                                <li id="editUppercaseError"> Min. 1 duża litera</li>
+                                <li id="editLowercaseError"> Min. 1 mała litera</li>
+                                <li id="editDigitError"> Min. 1 cyfra</li>
+                                <li id="editSpecialCharError"> Min. 1 znak specjalny</li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Zapisz zmiany</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--tabela-->
     <div class="table-container">
         <table class="table table-striped table-bordered">
             <thead>
@@ -130,6 +185,7 @@
                         <td>@user.Phone</td>
                         <td>@user.Role</td>
                         <td>@user.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+
                     </tr>
                     rowNumber++;
                     <!-- Zwiększamy licznik -->

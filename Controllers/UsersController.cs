@@ -162,5 +162,62 @@ namespace OrazWMS.Controllers
                 });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetUser(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
+
+            return Json(new
+            {
+                id = user.Id,
+                userName = user.UserName,
+                email = user.Email,
+                phoneNumber = user.PhoneNumber
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditUser([FromBody] EditUserModel model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.Id))
+            {
+                return BadRequest(new { success = false, message = "Nieprawidłowe dane użytkownika." });
+            }
+
+            var user = await _context.Users.FindAsync(model.Id);
+            if (user == null) return NotFound(new { success = false, message = "Użytkownik nie znaleziony." });
+
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+            // Sprawdzamy, czy hasło zostało przesłane w żądaniu i czy spełnia wymagania
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                if (!IsPasswordStrong(model.Password))
+                {
+                    return BadRequest(new { success = false, message = "Hasło nie spełnia wymagań bezpieczeństwa." });
+                }
+
+                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = "Dane użytkownika zaktualizowane!" });
+        }
+
+        // Metoda do sprawdzania siły hasła
+        private bool IsPasswordStrong(string password)
+        {
+            return password.Length >= 8 &&
+                   password.Any(char.IsUpper) &&
+                   password.Any(char.IsLower) &&
+                   password.Any(char.IsDigit) &&
+                   password.Any(ch => !char.IsLetterOrDigit(ch));
+        }
+
+
+
+
+
     }
 }
